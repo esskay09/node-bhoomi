@@ -7,11 +7,14 @@ app.use(express.urlencoded({ extended: true }));
 var port = process.env.PORT
 
 if(port== null || port == ""){
-    port = 3000;
-    app.listen(port , function(){
+    port = 3000;}
+    
+    
+    
+app.listen(port , function(){
         console.log("started")
     });
-}
+
 
 
 const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/pickcab"
