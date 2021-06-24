@@ -31,6 +31,10 @@ app.get("/", function (req, res) {
   res.send("sfdasfaf");
 });
 
+app.get("/", function(req, res){
+   res.send("Heya")
+});
+
 app.post("/verify/number/", function (req, res) {
   let otpGenerated = getRndInteger(100000, 999999);
 
