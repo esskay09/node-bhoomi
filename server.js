@@ -5,14 +5,19 @@ const bodyParser = require("body-parser");
 
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(8000, function () {
-  console.log("Server Started");
-});
+var port = process.env.PORT
 
-// const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/myFirstDatabase"
+if(port== null || port == ""){
+    port = 3000;
+    app.listen(port , function(){
+        console.log("started")
+    });
+}
 
-const dbUrl = "mongodb://localhost:27017/phoneNumbersDB";
-//TODO
+
+const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/myFirstDatabase"
+
+// const dbUrl = "mongodb://localhost:27017/phoneNumbersDB";
 
 mongoose.connect(dbUrl, { useNewUrlParser: true });
 
@@ -27,48 +32,42 @@ app.get("/", function (req, res) {
   res.send("sfdasfaf");
 });
 
-app.post("/verify/number/:number", function (req, res) {
+app.post("/verify/number/", function (req, res) {
   let otpGenerated = getRndInteger(100000, 999999);
 
   PhoneNumber.updateOne(
-    { number: req.params.number },
+    { number: req.body.number },
     { otp: otpGenerated },
     { upsert: true },
-    function (err, updatedNumber) {
-      console.log(updatedNumber);
+    function (err) {
+      if (err) {
+        console.log(err);
+      }
+      else{
+        res.send(JSON.parse('{"result": "Verification Started"}'));
+      }
     }
   );
 });
 
 app.post("/verify/number/otp/", function (req, res) {
+  console.log("number " + req.body.number + " otp" + req.body.otp);
+  PhoneNumber.findOne({ number: req.body.number }, function (err, foundNumber) {
+    console.log(foundNumber);
 
-    console.log("number " + req.params.number + " otp" + req.params.otp)
-  PhoneNumber.findOne({number: req.params.number},
-    function (err, foundNumber) {
-      if (err) {
-        console.log(err);
-        res.send(
-          JSON.parse({
-            result: "error",
-          })
-        );
+    if (err || !foundNumber) {
+      console.log(err);
+      res.send(JSON.parse('{"result" : "error" }'));
+    } else {
+      if (foundNumber.otp == req.body.otp) {
+        res.send(JSON.parse('{"result": "verified"}'));
+        console.log("Number Verified");
       } else {
-        if (foundNumber.otp == req.params.otp) {
-          res.send(
-            JSON.parse({
-              result: "verified",
-            })
-          );
-        } else {
-            res.send(
-                JSON.parse({
-                    result: "not verified" 
-                })
-            );
-        }
+        res.send(JSON.parse('{"result": "not verified"}'));
+        console.log("Number Verification Failed");
       }
     }
-  );
+  });
 });
 
 function getRndInteger(min, max) {
