@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -15,7 +14,7 @@ if(port== null || port == ""){
 }
 
 
-const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/myFirstDatabase"
+const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/pickcab"
 
 // const dbUrl = "mongodb://localhost:27017/phoneNumbersDB";
 
