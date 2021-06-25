@@ -1,30 +1,28 @@
 //jshint esversion:6
 
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const axios = require("axios")
-
+const axios = require("axios");
+const nodemailer = require("nodemailer");
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
 
-var port = process.env.PORT
+var port = process.env.PORT;
 
-if(port== null || port == ""){
-    port = 3000;}
-    
-    
-app.listen(port , function(){
-        console.log("started")
-        sendMail()
-    });
+if (port == null || port == "") {
+  port = 3000;
+}
 
+app.listen(port, function () {
+  console.log("started");
+});
 
+// const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/pickcab"
 
-const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/pickcab"
-
-// const dbUrl = "mongodb://localhost:27017/phoneNumbersDB";
+const dbUrl = "mongodb://localhost:27017/phoneNumbersDB";
 
 mongoose.connect(dbUrl, { useNewUrlParser: true });
 
@@ -39,8 +37,8 @@ app.get("/", function (req, res) {
   res.send("sfdasfaf");
 });
 
-app.get("/", function(req, res){
-   res.send("Heya")
+app.get("/", function (req, res) {
+  res.send("Heya");
 });
 
 app.post("/verify/number/", function (req, res) {
@@ -53,8 +51,7 @@ app.post("/verify/number/", function (req, res) {
     function (err) {
       if (err) {
         console.log(err);
-      }
-      else{
+      } else {
         res.send(JSON.parse('{"result": "Verification Started"}'));
       }
     }
@@ -85,31 +82,114 @@ function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-app.post("/SendConfirmation", function(req, res){
-     
-  
-   
-})
+app.post("/SendConfirmation", function (req, res) {
 
-function sendMail(){
+  console.log(req.body);
+
+    sendMail(req.body, function (result) {
+      
+      console.log(result);
 
 
-  const instance = axios.create({
-    headers: {"authorization" : "ey41fLbLzUm9jyRKm77jUHl2QdMdn9h5dw8qdBxbN9odCwouwyy5bhoh3Okz"}
+      if(result.result== "Mail Sent"){
+        res.sendStatus(200);
+      }
+    })
+
+});
+
+
+
+function sendMail(details, result) {
+
+  let messageBody = getFormattedConfirmationMessage(
+    details.forMail,
+    details.number,
+    details.startDate,
+    details.endDate,
+    details.time,
+    details.oneWay,
+    details.identityUrl,
+    details.startDestination,
+    details.endDestination,
+    details.forAdmin
+  );
+
+  let transport = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    auth: {
+      user: process.env.MAIL_ID,
+      pass: process.env.MAIL_PASSWORD,
+    },
   });
 
-
-  instance.post(//TODO
-  )
-  .then(response => {
-    console.log(response.data);
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.log(error);
+  const message = {
+    from: "abeta8327@gmail.com",
+    to: "esskay099@gmail.com, khanshaique544@gmail.com", 
+    subject: "Booking Confirmation", 
+    text: messageBody, 
+  };
+  transport.sendMail(message, function (err, info) {
+    if (err) {
+      result({
+        result: "Mail Sent Error",
+        msg: err
+      });
+    } else {
+      result({
+        result: "Mail Sent"
+      });
+    }
   });
 }
 
+function getFormattedConfirmationMessage(
+  forMail,
+  phoneNumber,
+  startDate,
+  endDate,
+  time,
+  oneWay,
+  identityUrl,
+  startDestination,
+  endDestination,
+  forAdmin
+) {
+  if (oneWay == true) {
+    wayString = "One Way";
+  } else {
+    wayString = "Two Way";
+  }
+  if (oneWay == true) {
+    dateString = `On ${startDate}`;
+  } else {
+    dateString = `From ${startDate} to ${endDate}`;
+  }
+  if (forMail == true) {
+    identityString = `identity URL: ${identityUrl}`;
+  } else {
+    identityUrl = "";
+  }
+  if (forAdmin == false) {
+    endingString = "Have a great trip!!";
+  } else {
+    endingString = "";
+  }
 
+  let confirmString =
+    "Booking Confirmed" +
+    "\n\n" +
+    `From ${startDestination} to ${endDestination} \n` +
+    wayString +
+    "\n" +
+    dateString +
+    "\n" +
+    `Pickup Time: ${time}\n` +
+    identityUrl +
+    "\n" +
+    `Contact number: ${phoneNumber} + \n` +
+    endingString;
 
-
+  return confirmString;
+}
