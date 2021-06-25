@@ -1,6 +1,11 @@
+//jshint esversion:6
+
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const axios = require("axios")
+
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -10,9 +15,9 @@ if(port== null || port == ""){
     port = 3000;}
     
     
-    
 app.listen(port , function(){
         console.log("started")
+        sendMail()
     });
 
 
@@ -79,3 +84,32 @@ app.post("/verify/number/otp/", function (req, res) {
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
+
+app.post("/SendConfirmation", function(req, res){
+     
+  
+   
+})
+
+function sendMail(){
+
+
+  const instance = axios.create({
+    headers: {"authorization" : "ey41fLbLzUm9jyRKm77jUHl2QdMdn9h5dw8qdBxbN9odCwouwyy5bhoh3Okz"}
+  });
+
+
+  instance.post(//TODO
+  )
+  .then(response => {
+    console.log(response.data);
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.log(error);
+  });
+}
+
+
+
+
