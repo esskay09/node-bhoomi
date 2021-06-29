@@ -20,9 +20,9 @@ app.listen(port, function () {
   console.log("started");
 });
 
-// const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/pickcab"
+const dbUrl = "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/pickcab"
 
-const dbUrl = "mongodb://localhost:27017/phoneNumbersDB";
+// const dbUrl = "mongodb://localhost:27017/phoneNumbersDB";
 
 mongoose.connect(dbUrl, { useNewUrlParser: true });
 
@@ -105,7 +105,20 @@ app.post("/SendConfirmation", function (req, res) {
 
 function sendSMS(details, result){
 
-  axios.get('https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=&language=english&flash=0&numbers=9334805466')
+  let messageBody = getFormattedConfirmationMessage(
+    details.forMail,
+    details.number,
+    details.startDate,
+    details.endDate,
+    details.time,
+    details.oneWay,
+    details.identityUrl,
+    details.startDestination,
+    details.endDestination,
+    details.forAdmin
+  );
+
+  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=${messageBody}&language=english&flash=0&numbers=9334805466`)
   .then(function (response) {
     // handle success
     result( 
