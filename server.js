@@ -108,7 +108,7 @@ function sendSMS(details, result){
 
   let messageForUser = getFormattedConfirmationMessage(
     false,
-    details.number,
+    adminNumber,
     details.startDate,
     details.endDate,
     details.time,
