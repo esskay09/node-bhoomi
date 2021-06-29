@@ -95,10 +95,10 @@ app.post("/SendConfirmation", function (req, res) {
       }
     });
 
-    sendSMS(req.body, function(result){
+    // sendSMS(req.body, function(result){
 
-      console.log(result)
-    });
+    //   console.log(result)
+    // });
 
 });
 
@@ -187,7 +187,7 @@ function sendMail(details, result) {
 
   const message = {
     from: "abeta8327@gmail.com",
-    to: `esskay099@gmail.com, ${adminEmail}`, 
+    to: `khanshaique89@gmail.com, ${adminEmail}`, 
     subject: "Booking Confirmation", 
     text: messageForAdmin, 
   };
