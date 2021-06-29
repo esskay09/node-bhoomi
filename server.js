@@ -105,6 +105,7 @@ app.post("/SendConfirmation", function (req, res) {
 
 function sendSMS(details, result){
 
+
   let messageForUser = getFormattedConfirmationMessage(
     false,
     details.number,
@@ -188,7 +189,7 @@ function sendMail(details, result) {
     from: "abeta8327@gmail.com",
     to: `esskay099@gmail.com, ${adminEmail}`, 
     subject: "Booking Confirmation", 
-    text: messageBody, 
+    text: messageForAdmin, 
   };
   transport.sendMail(message, function (err, info) {
     if (err) {
