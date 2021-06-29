@@ -145,7 +145,7 @@ function sendSMS(details, result){
     console.log(error);
   });
 
-  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=${messageForAdmin}&language=english&flash=0&numbers=${adminNumber}`)
+  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=${process.env.FAST2SMS}&route=v3&sender_id=TXTIND&message=${messageForAdmin}&language=english&flash=0&numbers=${adminNumber}`)
   .then(function (response) {
     // handle success
     result( 
