@@ -90,13 +90,33 @@ app.post("/SendConfirmation", function (req, res) {
       
       console.log(result);
 
-
       if(result.result== "Mail Sent"){
         res.sendStatus(200);
       }
-    })
+    });
+
+    sendSMS(req.body, function(result){
+
+      console.log(result)
+    });
 
 });
+
+
+function sendSMS(details, result){
+
+  axios.get('https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=&language=english&flash=0&numbers=9334805466')
+  .then(function (response) {
+    // handle success
+    result( 
+      response
+    )
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  });
+}
 
 
 
