@@ -7,6 +7,9 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 
+let adminNumber = 9334805466;
+let adminEmail = "esskay099@gmail.com";
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 
@@ -37,9 +40,6 @@ app.get("/", function (req, res) {
   res.send("sfdasfaf");
 });
 
-app.get("/", function (req, res) {
-  res.send("Heya");
-});
 
 app.post("/verify/number/", function (req, res) {
   let otpGenerated = getRndInteger(100000, 999999);
@@ -105,8 +105,8 @@ app.post("/SendConfirmation", function (req, res) {
 
 function sendSMS(details, result){
 
-  let messageBody = getFormattedConfirmationMessage(
-    details.forMail,
+  let messageForUser = getFormattedConfirmationMessage(
+    false,
     details.number,
     details.startDate,
     details.endDate,
@@ -115,10 +115,24 @@ function sendSMS(details, result){
     details.identityUrl,
     details.startDestination,
     details.endDestination,
-    details.forAdmin
+    false
   );
 
-  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=${messageBody}&language=english&flash=0&numbers=9334805466`)
+  let messageForAdmin = getFormattedConfirmationMessage(
+    false,
+    details.number,
+    details.startDate,
+    details.endDate,
+    details.time,
+    details.oneWay,
+    details.identityUrl,
+    details.startDestination,
+    details.endDestination,
+    true
+  );
+
+
+  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=${messageForUser}&language=english&flash=0&numbers=${details.number}`)
   .then(function (response) {
     // handle success
     result( 
@@ -129,14 +143,27 @@ function sendSMS(details, result){
     // handle error
     console.log(error);
   });
+
+  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=${messageForAdmin}&language=english&flash=0&numbers=${adminNumber}`)
+  .then(function (response) {
+    // handle success
+    result( 
+      response
+    )
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  });
+
 }
 
 
 
 function sendMail(details, result) {
 
-  let messageBody = getFormattedConfirmationMessage(
-    details.forMail,
+  let messageForAdmin = getFormattedConfirmationMessage(
+    true,
     details.number,
     details.startDate,
     details.endDate,
@@ -145,7 +172,7 @@ function sendMail(details, result) {
     details.identityUrl,
     details.startDestination,
     details.endDestination,
-    details.forAdmin
+    true
   );
 
   let transport = nodemailer.createTransport({
@@ -159,7 +186,7 @@ function sendMail(details, result) {
 
   const message = {
     from: "abeta8327@gmail.com",
-    to: "esskay099@gmail.com, khanshaique544@gmail.com", 
+    to: `esskay099@gmail.com, ${adminEmail}`, 
     subject: "Booking Confirmation", 
     text: messageBody, 
   };
