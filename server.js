@@ -44,6 +44,8 @@ app.get("/", function (req, res) {
 app.post("/verify/number/", function (req, res) {
   let otpGenerated = getRndInteger(100000, 999999);
 
+  sendOtp(req.body.number, otpGenerated)
+
   PhoneNumber.updateOne(
     { number: req.body.number },
     { otp: otpGenerated },
@@ -51,8 +53,10 @@ app.post("/verify/number/", function (req, res) {
     function (err) {
       if (err) {
         console.log(err);
+        res.sendStatus(500)
       } else {
         res.send(JSON.parse('{"result": "Verification Started"}'));
+        res.sendStatus(200)
       }
     }
   );
@@ -69,9 +73,11 @@ app.post("/verify/number/otp/", function (req, res) {
     } else {
       if (foundNumber.otp == req.body.otp) {
         res.send(JSON.parse('{"result": "verified"}'));
+        res.sendStatus(200)
         console.log("Number Verified");
       } else {
         res.send(JSON.parse('{"result": "not verified"}'));
+        res.sendStatus(500)
         console.log("Number Verification Failed");
       }
     }
@@ -95,10 +101,10 @@ app.post("/SendConfirmation", function (req, res) {
       }
     });
 
-    // sendSMS(req.body, function(result){
+    sendSMS(req.body, function(result){
 
-    //   console.log(result)
-    // });
+      console.log(result)
+    });
 
 });
 
@@ -133,7 +139,7 @@ function sendSMS(details, result){
   );
 
 
-  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=${messageForUser}&language=english&flash=0&numbers=${details.number}`)
+  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=${process.env.FAST2SMS}&route=v3&sender_id=TXTIND&message=${messageForUser}&language=english&flash=0&numbers=${details.number}`)
   .then(function (response) {
     // handle success
     result( 
@@ -148,6 +154,24 @@ function sendSMS(details, result){
   axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=${process.env.FAST2SMS}&route=v3&sender_id=TXTIND&message=${messageForAdmin}&language=english&flash=0&numbers=${adminNumber}`)
   .then(function (response) {
     // handle success
+    result( 
+      response
+    )
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  });
+
+}
+
+
+function sendOtp(number, otp){
+
+  let message = `Your One time password for pickcab is ${otp}`
+
+  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=${message}&language=english&flash=0&numbers=${number}`)
+  .then(function (response) {
     result( 
       response
     )
@@ -187,7 +211,7 @@ function sendMail(details, result) {
 
   const message = {
     from: "abeta8327@gmail.com",
-    to: `khanshaique89@gmail.com, ${adminEmail}`, 
+    to: `khanshaique78@gmail.com, ${adminEmail}`, 
     subject: "Booking Confirmation", 
     text: messageForAdmin, 
   };
