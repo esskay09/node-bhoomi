@@ -45,9 +45,13 @@ app.get("/", function (req, res) {
 app.post("/verify/number/", function (req, res) {
   let otpGenerated = getRndInteger(100000, 999999);
 
-  sendOtp(req.body.number, otpGenerated, function (response) {
-    console.log(response)
-  })
+  try{
+    sendOtp(req.body.number, otpGenerated, function (response) {
+      console.log(response)
+    });
+  } catch(err){
+    console.log(err);
+  }
 
   PhoneNumber.updateOne(
     { number: req.body.number },
