@@ -61,8 +61,7 @@ app.post("/verify/number/", function (req, res) {
         console.log(err);
         res.sendStatus(500)
       } else {
-        res.sendStatus(200)
-        res.send(JSON.parse('{"result": "Verification Started"}'));
+        res.status(200).send(JSON.parse('{"result": "Verification Started"}'));
       }
     }
   );
@@ -75,15 +74,13 @@ app.post("/verify/number/otp/", function (req, res) {
 
     if (err || !foundNumber) {
       console.log(err);
-      res.send(JSON.parse('{"result" : "error" }'));
+      res.status(200).send(JSON.parse('{"result" : "error" }'));
     } else {
       if (foundNumber.otp == req.body.otp) {
-        res.sendStatus(200)
-        res.send(JSON.parse('{"result": "verified"}'));
+        res.status(200).send(JSON.parse('{"result": "verified"}'));
         console.log("Number Verified");
       } else {
-        res.sendStatus(500)
-        res.send(JSON.parse('{"result": "not verified"}'));
+        res.status(200).send(JSON.parse('{"result": "not verified"}'));
         console.log("Number Verification Failed");
       }
     }
