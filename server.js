@@ -169,7 +169,7 @@ function sendSMS(details, result){
 
 function sendOtp(number, otp, result){
 
-  let message = `Your One time password for pickcab is ${otp} \n PCYX+T1RS21`
+  let message = `Your One time password for pickcab is ${otp} \n "PCYX+T1RS21"`
 
   axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=${process.env.FAST2SMS}&route=v3&sender_id=TXTIND&message=${message}&language=english&flash=0&numbers=${number}`)
   .then(function (response) {
