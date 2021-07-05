@@ -6,6 +6,7 @@ const app = express();
 const mongoose = require("mongoose");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
+const { response } = require("express");
 
 let adminNumber = 9334805466;
 let adminEmail = "esskay099@gmail.com";
@@ -44,7 +45,9 @@ app.get("/", function (req, res) {
 app.post("/verify/number/", function (req, res) {
   let otpGenerated = getRndInteger(100000, 999999);
 
-  sendOtp(req.body.number, otpGenerated)
+  sendOtp(req.body.number, otpGenerated, function (response) {
+    console.log(response)
+  })
 
   PhoneNumber.updateOne(
     { number: req.body.number },
@@ -166,11 +169,11 @@ function sendSMS(details, result){
 }
 
 
-function sendOtp(number, otp){
+function sendOtp(number, otp, result){
 
   let message = `Your One time password for pickcab is ${otp}`
 
-  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=tpRTgmQXliI5vBDbLjN4oGACwV3fPFydYOhr9M8WqnJu7ZkKeSrTSkb1uzULDIx37ZBYfaM56XgGv9s4&route=v3&sender_id=TXTIND&message=${message}&language=english&flash=0&numbers=${number}`)
+  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=${process.env.FAST2SMS}&route=v3&sender_id=TXTIND&message=${message}&language=english&flash=0&numbers=${number}`)
   .then(function (response) {
     result( 
       response
@@ -178,7 +181,7 @@ function sendOtp(number, otp){
   })
   .catch(function (error) {
     // handle error
-    console.log(error);
+    result(response);
   });
 
 }
