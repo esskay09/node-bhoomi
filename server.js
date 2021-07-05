@@ -58,8 +58,8 @@ app.post("/verify/number/", function (req, res) {
         console.log(err);
         res.sendStatus(500)
       } else {
-        res.send(JSON.parse('{"result": "Verification Started"}'));
         res.sendStatus(200)
+        res.send(JSON.parse('{"result": "Verification Started"}'));
       }
     }
   );
