@@ -6,7 +6,6 @@ const app = express();
 const mongoose = require("mongoose");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
-const { response } = require("express");
 
 let adminNumber = 9334805466;
 let adminEmail = "esskay099@gmail.com";
@@ -79,12 +78,12 @@ app.post("/verify/number/otp/", function (req, res) {
       res.send(JSON.parse('{"result" : "error" }'));
     } else {
       if (foundNumber.otp == req.body.otp) {
-        res.send(JSON.parse('{"result": "verified"}'));
         res.sendStatus(200)
+        res.send(JSON.parse('{"result": "verified"}'));
         console.log("Number Verified");
       } else {
-        res.send(JSON.parse('{"result": "not verified"}'));
         res.sendStatus(500)
+        res.send(JSON.parse('{"result": "not verified"}'));
         console.log("Number Verification Failed");
       }
     }
