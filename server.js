@@ -7,8 +7,6 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 
-let adminNumber = 9334805466;
-let adminEmail = "esskay099@gmail.com";
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
@@ -115,7 +113,7 @@ function sendSMS(details, result){
 
   let messageForUser = getFormattedConfirmationMessage(
     false,
-    adminNumber,
+    process.env.ADMINNUM,
     details.startDate,
     details.endDate,
     details.time,
@@ -152,7 +150,7 @@ function sendSMS(details, result){
     console.log(error);
   });
 
-  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=${process.env.FAST2SMS}&route=v3&sender_id=TXTIND&message=${messageForAdmin}&language=english&flash=0&numbers=${adminNumber}`)
+  axios.get(`https://www.fast2sms.com/dev/bulkV2?authorization=${process.env.FAST2SMS}&route=v3&sender_id=TXTIND&message=${messageForAdmin}&language=english&flash=0&numbers=${process.env.ADMIN_NUM}`)
   .then(function (response) {
     // handle success
     result( 
@@ -212,7 +210,7 @@ function sendMail(details, result) {
 
   const message = {
     from: "abeta8327@gmail.com",
-    to: `khanshaique78@gmail.com, ${adminEmail}`, 
+    to: `esskay099@gmail.com, ${process.env.ADMIN_EMAIL}`, 
     subject: "Booking Confirmation", 
     text: messageForAdmin, 
   };
