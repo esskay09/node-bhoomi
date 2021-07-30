@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 const nodemailer = require("nodemailer");
 
+const Razorpay = require("razorpay");
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -277,7 +279,7 @@ app.get("/generateOrder/:amount", function (req, res) {
   var options = {
     amount: amount, // amount in the smallest currency unit
     currency: "INR",
-    receipt: "order_rcptid_11",
+    receipt: "order_rcptid_11"
   };
   instance.orders.create(options, function (err, order) {
     if (err) {
