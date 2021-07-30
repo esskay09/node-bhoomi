@@ -287,7 +287,8 @@ app.get("/generateOrder/", function (req, res) {
       res.status(200).send(JSON.parse('{"result" : "error" }'));
     } else {
       console.log(order);
-      res.status(200).send(JSON.parse(`{"result": "Order Created", "orderID": "${order.id}", "amount": "${order.amount}"}`));
+      const amountOrder = order.amount/100
+      res.status(200).send(JSON.parse(`{"result": "Order Created", "orderID": "${order.id}", "amount": "${amountOrder}"}`));
     }
   });
 });
