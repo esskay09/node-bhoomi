@@ -277,7 +277,7 @@ app.get("/generateOrder/", function (req, res) {
   });
 
   var options = {
-    amount: amount, // amount in the smallest currency unit
+    amount: `${amount}`, // amount in the smallest currency unit
     currency: "INR",
     receipt: "order_rcptid_12"
   };
@@ -287,7 +287,7 @@ app.get("/generateOrder/", function (req, res) {
       res.status(200).send(JSON.parse('{"result" : "error" }'));
     } else {
       console.log(order);
-      res.status(200).send(JSON.parse(`{"result": "Order Created", "orderID": "${order.id}"}, "amount": "${order.amount}"}`));
+      res.status(200).send(JSON.parse(`{"result": "Order Created", "orderID": "${order.id}", "amount": "${order.amount}"}`));
     }
   });
 });
