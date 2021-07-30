@@ -265,7 +265,7 @@ function getFormattedConfirmationMessage(
   return confirmString;
 }
 
-app.post("/generateOrder/:amount", function (req, res) {
+app.get("/generateOrder/:amount", function (req, res) {
 
   const amount = req.params.amount * 100
 
