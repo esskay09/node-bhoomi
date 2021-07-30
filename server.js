@@ -289,7 +289,7 @@ app.get("/generateOrder/", function (req, res) {
       console.log(order);
       res
         .status(200)
-        .send(JSON.parse(`{"result": "Order Created", "order": "${order}"}`));
+        .send(JSON.parse(`{"result": "Order Created", "orderID": "${order.id}"}, "amount": "${order.amount}"`));
     }
   });
 });
