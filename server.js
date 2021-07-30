@@ -265,9 +265,9 @@ function getFormattedConfirmationMessage(
   return confirmString;
 }
 
-app.post("/generateOrder", function (req, res) {
+app.post("/generateOrder/:amount", function (req, res) {
 
-  const amount = req.body.amount * 100
+  const amount = req.params.amount * 100
 
   var instance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -291,3 +291,4 @@ app.post("/generateOrder", function (req, res) {
     }
   });
 });
+
