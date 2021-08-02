@@ -281,6 +281,9 @@ app.post("/generateOrder/", function (req, res) {
     currency: "INR",
     receipt: "order_rcptid_12"
   };
+
+   console.log(`amount: ${amount} \n razorpay options: ${options}`)
+
   instance.orders.create(options, function (err, order) {
     if (err) {
       console.log(`Razorpay error: ${err}`);
