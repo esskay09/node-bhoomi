@@ -22,8 +22,7 @@ app.listen(port, function () {
   console.log("started");
 });
 
-const dbUrl =
-  "mongodb+srv://esskay:9NVp77m7M9VhquF@cluster0.vgywg.mongodb.net/pickcab";
+const dbUrl = process.env.MONGO;
 
 // const dbUrl = "mongodb://localhost:27017/phoneNumbersDB";
 
